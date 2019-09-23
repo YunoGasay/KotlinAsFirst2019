@@ -54,6 +54,7 @@ class Tests {
         assertEquals(13, seconds(0, 0, 13))
     }
 
+
     @Test
     @Tag("Trivial")
     fun lengthInMeters() {
