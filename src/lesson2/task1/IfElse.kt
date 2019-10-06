@@ -2,7 +2,9 @@
 
 package lesson2.task1
 
+//import jdk.vm.ci.aarch64.AArch64.v1
 import lesson1.task1.discriminant
+import javax.management.Query.div
 import kotlin.math.max
 import kotlin.math.sqrt
 
@@ -63,17 +65,11 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String = when (age) {
-    1, 21, 31, 41, 51, 61, 71, 81, 91, 101, 121, 131, 141, 161, 171, 191 -> "$age год"
-    2, 3, 4, 22, 23, 24, 32, 33, 34, 42, 43, 44, 52, 53, 54, 62, 63, 64, 72, 73, 74, 82, 83, 84, 92, 93, 94, 102, 103,
-    104, 122, 123, 124, 132, 133, 134, 142, 143, 144, 152, 153, 154, 162, 163, 164, 172, 173, 174, 182, 183, 184, 192,
-    193, 194 -> "$age года"
-    5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 26, 27, 28, 29, 30, 35, 36, 37, 38, 39, 40, 45, 46,
-    47, 48, 49, 50, 55, 56, 57, 58, 59, 60, 65, 66, 67, 68, 69, 70, 75, 76, 77, 78, 79, 80, 85, 86, 87, 88, 89, 90, 95,
-    96, 97, 98, 99, 100, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 125, 126, 127,
-    128, 129, 130, 135, 136, 137, 138, 139, 140, 145, 146, 147, 148, 149, 150, 155, 156, 157, 158, 159, 160, 165, 166,
-    167, 168, 169, 170, 175, 176, 177, 178, 179, 180, 185, 186, 187, 188, 189, 190, 195, 196, 197, 198, 199 -> "$age лет"
-    else -> "возраст введён не верно"
+fun ageDescription(age: Int): String = when {
+    (age % 100 >= 5) and (age % 100 < 21) -> "$age лет"
+    (age % 10 <= 1) -> "$age год"
+    (age % 100 < 5) or (age % 10 < 5) -> "$age года"
+    else -> "$age лет"
 }
 
 
@@ -89,10 +85,18 @@ fun timeForHalfWay(
     t2: Double, v2: Double,
     t3: Double, v3: Double
 ): Double {
-    val S = v1 * t1 + v2 * t2 + v3 * t3 / 2
-
-
+    val s1 = v1 * t1
+    val s2 = v2 * t2
+    val s3 = v3 * t3
+    val s = (s1 + s2 + s3) / 2
+    return when {
+        s <= s1 -> s / v1
+        s <= s1 + s2 -> (s - s1) / v2 + t1
+        s <= s1 + s2 + s3 -> (s - s1 - s2) / v3 + t1 + t2
+        else -> t1 + t2 + t3
+    }
 }
+
 
 /**
  * Простая
@@ -107,7 +111,21 @@ fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
-): Int = TODO()
+): Int {
+    return when {
+        (rookX1 == kingX) and (kingX == rookX2) -> 3
+        (rookX1 == kingX) and (kingY == rookY2) -> 3
+        (rookX2 == kingX) and (kingY == rookY1) -> 3
+        (rookY1 == kingY) and (kingY == rookY2) -> 3
+        (rookX1 == kingX) and (kingY == rookY2) -> 3
+        (rookX2 == kingX) and (kingY == rookY1) -> 3
+        rookX1 == kingX -> 1
+        rookX2 == kingX -> 2
+        rookY1 == kingY -> 1
+        rookY2 == kingY -> 2
+        else -> 0
+    }
+}
 
 /**
  * Простая
@@ -123,7 +141,16 @@ fun rookOrBishopThreatens(
     kingX: Int, kingY: Int,
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
-): Int = TODO()
+): Int {
+    return when {
+        (kingX == rookX) and (kingX % 2 == bishopX % 2) and (kingY % 2 == bishopY % 2) -> 3
+        (kingY == rookY) and (kingX % 2 == bishopX % 2) and (kingY % 2 == bishopY % 2) -> 3
+        kingX == rookX -> 1
+        kingY == rookY -> 1
+        (kingX % 2 == bishopX % 2) and (kingY % 2 == bishopY % 2) -> 2
+        else -> 0
+    }
+}
 
 /**
  * Простая
@@ -133,7 +160,14 @@ fun rookOrBishopThreatens(
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int {
+    return when {
+        a * a + b * b < c * c -> 2
+        (a * a + b * b == c * c) or (a * a + c * c == b * b) or (b * b + c * c == a * a) -> 1
+        (a * a + b * b > c * c) and (a + b > c) and (a + c > b) and (b + c > a) -> 0
+        else -> -1
+    }
+}
 
 /**
  * Средняя
@@ -143,4 +177,14 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = TODO()
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
+    return when {
+        (c <= a) and (d <= b) and (a > d) -> -1
+        (a <= c) and (b <= d) and (c > b) -> -1
+        (c <= a) and (d <= b) -> (d - a)
+        (c <= a) and (b <= d) -> (b - a)
+        (a <= c) and (b <= d) -> (b - c)
+        (a <= c) and (d <= b) -> (d - c)
+        else -> -2
+    }
+}

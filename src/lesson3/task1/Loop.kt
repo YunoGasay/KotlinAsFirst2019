@@ -2,6 +2,7 @@
 
 package lesson3.task1
 
+import kotlin.math.min
 import kotlin.math.sqrt
 
 /**
@@ -67,7 +68,16 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitNumber(n: Int): Int = TODO()
+fun digitNumber(n: Int): Int {
+    var r: Int = n
+    var m: Int = 0
+    if (r == 0) return 1
+    while (r > 0) {
+        r /= 10
+        m += 1
+    }
+    return m
+}
 
 /**
  * Простая
@@ -75,7 +85,10 @@ fun digitNumber(n: Int): Int = TODO()
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(n: Int): Int {
+    if ((n == 1) or (n == 2)) return 1
+    return fib(n - 1) + fib(n - 2)
+}
 
 /**
  * Простая
@@ -133,7 +146,11 @@ fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
  * Написать функцию, которая находит, сколько шагов требуется для
  * этого для какого-либо начального X > 0.
  */
-fun collatzSteps(x: Int): Int = TODO()
+fun collatzSteps(x: Int): Int {
+    if (x == 1) return 0
+    if (x % 2 == 0) return 1 + collatzSteps(x / 2)
+    return 1 + collatzSteps(x * 3 + 1)
+}
 
 /**
  * Средняя
@@ -164,7 +181,15 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    var a: Int = n
+    var b: Int = 0
+    while (a > 0) {
+        b = (a % 10) + b * 10
+        a /= 10
+    }
+    return b
+}
 
 /**
  * Средняя
@@ -175,7 +200,16 @@ fun revert(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int): Boolean {
+    var a: Int = n
+    var b: Int = revert(n)
+    while (a > 0) {
+        if (a % 10 != b % 10) return false
+        a /= 10
+        b /= 10
+    }
+    return true
+}
 
 /**
  * Средняя
@@ -185,7 +219,18 @@ fun isPalindrome(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    var a: Int = n
+    var b = 0
+    var c = 0
+    while (a > 9) {
+        b = a % 10
+        c = (a / 10) % 10
+        a /= 10
+        if (b != c) return true
+    }
+    return false
+}
 
 /**
  * Сложная
@@ -196,7 +241,24 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var a: Int = 1
+    var b: Int = 1
+    var m: Int = 0
+    while (m + digitNumber(b) < n) {
+        m += digitNumber(b)
+        a++
+        b = a * a
+    }
+    m += digitNumber(b)
+    m -= n
+    var i: Int = 0
+    while (i < m) {
+        b /= 10
+        i++
+    }
+    return b % 10
+}
 
 /**
  * Сложная
@@ -207,4 +269,21 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var a: Int = 1
+    var b: Int = 1
+    var m: Int = 0
+    while (m + digitNumber(b) < n) {
+        m += digitNumber(b)
+        a++
+        b = fib(a)
+    }
+    m += digitNumber(b)
+    m -= n
+    var i: Int = 0
+    while (i < m) {
+        b /= 10
+        i++
+    }
+    return b % 10
+}
