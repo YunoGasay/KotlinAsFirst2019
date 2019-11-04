@@ -115,14 +115,25 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double = TODO()
+fun abs(v: List<Double>): Double =
+    if (v.isEmpty()) 0.0
+    else {
+        var s = 0.0
+        for (i in v.indices)
+            s += v[i] * v[i]
+        sqrt(s)
+    }
 
 /**
  * Простая
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double = TODO()
+fun mean(list: List<Double>): Double =
+    when {
+        (list.isNotEmpty()) -> (list.sum() / list.size)
+        else -> 0.0
+    }
 
 /**
  * Средняя
@@ -132,7 +143,15 @@ fun mean(list: List<Double>): Double = TODO()
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun center(list: MutableList<Double>): MutableList<Double> = TODO()
+fun center(list: MutableList<Double>): MutableList<Double> {
+    val s: Double
+    if (list.isNotEmpty()) {
+        s = (list.sum() / list.size)
+        for (i in 0 until list.size)
+            list[i] -= s
+    }
+    return list
+}
 
 /**
  * Средняя
@@ -141,7 +160,16 @@ fun center(list: MutableList<Double>): MutableList<Double> = TODO()
  * представленные в виде списков a и b. Скалярное произведение считать по формуле:
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
  */
-fun times(a: List<Int>, b: List<Int>): Int = TODO()
+fun times(a: List<Int>, b: List<Int>): Int =
+    if (a.isEmpty() or b.isEmpty()) 0
+    else {
+        var c = 0
+        for (i in a.indices) for (j in b.indices)
+            if (i == j) {
+                c += a[i] * b[i]
+            }
+        c
+    }
 
 /**
  * Средняя
@@ -151,7 +179,17 @@ fun times(a: List<Int>, b: List<Int>): Int = TODO()
  * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
  * Значение пустого многочлена равно 0 при любом x.
  */
-fun polynom(p: List<Int>, x: Int): Int = TODO()
+fun polynom(p: List<Int>, x: Int): Int =
+    if (p.isEmpty()) 0
+    else {
+        var s = 0
+        var x1 = 1
+        for (element in p) {
+            s += element * x1
+            x1 *= x
+        }
+        s
+    }
 
 /**
  * Средняя
@@ -163,7 +201,14 @@ fun polynom(p: List<Int>, x: Int): Int = TODO()
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun accumulate(list: MutableList<Int>): MutableList<Int> = TODO()
+fun accumulate(list: MutableList<Int>): MutableList<Int> {
+    var s = 0
+    for (i in 0 until list.size) {
+        s += list[i]
+        list[i] = s
+    }
+    return list
+}
 
 /**
  * Средняя
@@ -172,7 +217,22 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> = TODO()
  * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
  * Множители в списке должны располагаться по возрастанию.
  */
-fun factorize(n: Int): List<Int> = TODO()
+fun factorize(n: Int): List<Int> {
+    var n1 = n
+    var m0 = 2
+    val q = mutableListOf<Int>()
+    while (n1 != 1) {
+        for (i in 0 until n1)
+            if (n1 % m0 == 0) {
+                n1 /= m0
+                q.add(m0)
+            }
+        m0 += 1
+    }
+    q.sorted()
+    return q
+}
+
 
 /**
  * Сложная
@@ -181,7 +241,21 @@ fun factorize(n: Int): List<Int> = TODO()
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String = TODO()
+fun factorizeToString(n: Int): String {
+    var n1 = n
+    var m0 = 2
+    val q = mutableListOf<Int>()
+    while (n1 != 1) {
+        for (i in 0 until n1)
+            if (n1 % m0 == 0) {
+                n1 /= m0
+                q.add(m0)
+            }
+        m0 += 1
+    }
+    q.sorted()
+    return q.joinToString(separator = "*")
+}
 
 /**
  * Средняя
@@ -190,7 +264,22 @@ fun factorizeToString(n: Int): String = TODO()
  * Результат перевода вернуть в виде списка цифр в base-ичной системе от старшей к младшей,
  * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
  */
-fun convert(n: Int, base: Int): List<Int> = TODO()
+fun convert(n: Int, base: Int): List<Int> {
+    var n1 = n
+    var m0 = 0
+    val q = mutableListOf<Int>()
+    while (n1 / 10 > 0) {
+        m0 = n1 % base
+        n1 /= base
+        q.add(0, m0)
+    }
+    while (n1 > 0) {
+        m0 = n1 % base
+        n1 /= base
+        q.add(0, m0)
+    }
+    return q
+}
 
 /**
  * Сложная
@@ -203,7 +292,20 @@ fun convert(n: Int, base: Int): List<Int> = TODO()
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-fun convertToString(n: Int, base: Int): String = TODO()
+fun convertToString(n: Int, base: Int): String {
+    var n1 = n
+    val q = StringBuilder()
+    if (n == 0) return "0"
+    while (n1 != 0) {
+        val s = n1 % base
+        q.append(
+            if (s < 10) s
+            else 'a' + s - 10
+        )
+        n1 /= base
+    }
+    return q.toString().reversed()
+}
 
 /**
  * Средняя
@@ -212,7 +314,14 @@ fun convertToString(n: Int, base: Int): String = TODO()
  * из системы счисления с основанием base в десятичную.
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
-fun decimal(digits: List<Int>, base: Int): Int = TODO()
+fun decimal(digits: List<Int>, base: Int): Int {
+    var s = 0
+    for (i in digits) {
+        s *= base
+        s += i
+    }
+    return s
+}
 
 /**
  * Сложная
@@ -226,7 +335,15 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int {
+    var s = 0
+    for (i in str) {
+        s *= base
+        s += if (i.isDigit()) (i - '0')
+        else (i - 'a' + 10)
+    }
+    return s
+}
 
 /**
  * Сложная
@@ -245,4 +362,60 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    if (n == 0) return "ноль"
+    var result = ""
+    val a = mapOf(
+        1 to "один", 2 to "два", 3 to "три", 4 to "четыре", 5 to "пять", 6 to "шесть",
+        7 to "семь", 8 to "восемь", 9 to "девять"
+    )
+    val a1 = mapOf(
+        1 to "одна", 2 to "две", 3 to "три", 4 to "четыре", 5 to "пять", 6 to "шесть",
+        7 to "семь", 8 to "восемь", 9 to "девять"
+    )
+    val b = mapOf(
+        11 to "одинадцать", 12 to "двенадцать", 13 to "тринадцать", 14 to "четырнадцать",
+        15 to "пятнадцать", 16 to "шестнадцать", 17 to "семнадцать", 18 to "восемнадцать", 19 to "девятнадцать"
+    )
+    val c = mapOf(
+        1 to "десять", 2 to "двадцать", 3 to "тридцать", 4 to "сорок", 5 to "пятьдесят",
+        6 to "шестьдесят", 7 to "семьдесят", 8 to "восемьдесят", 9 to "девяносто"
+    )
+    val d = mapOf(
+        1 to "сто", 2 to "двести", 3 to "триста", 4 to "четыреста", 5 to "пятьсот",
+        6 to "шестьсот", 7 to "семьсот", 8 to "восемьсот", 9 to "девятьсот"
+    )
+    var src = n
+    var k = src % 1000
+    var move = 1
+    while (src > 0) {
+        if (k > 0) {
+            var moveResult = ""
+            var k100 = k % 100
+            if (b.containsKey(k100))
+                moveResult = "${b[k100]}"
+            else {
+                val k10 = k % 10
+                k100 /= 10
+                moveResult = "${c.getOrDefault(k100, "")} ${if (move == 1)
+                    a.getOrDefault(k10, "") else a1.getOrDefault(k10, "")}".trim()
+            }
+            val k1000 = k / 100
+            moveResult = "${d.getOrDefault(k1000, "")} $moveResult".trim()
+            if (move > 1 && moveResult.isNotBlank()) {
+                moveResult = "$moveResult " +
+                        when {
+                            k % 100 in 11..19 -> "тысяч"
+                            k % 10 == 1 -> "тысяча"
+                            k % 10 in 2..4 -> "тысячи"
+                            else -> "тысяч"
+                        }
+            }
+            result = "$moveResult $result".trim()
+        }
+        src /= 1000
+        k = src % 1000
+        move++
+    }
+    return result
+}
