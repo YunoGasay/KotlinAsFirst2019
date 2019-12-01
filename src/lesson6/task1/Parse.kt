@@ -2,6 +2,8 @@
 
 package lesson6.task1
 
+import lesson2.task2.daysInMonth
+
 /**
  * Пример
  *
@@ -69,7 +71,44 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+
+fun getStringMonth(str: String): Int {
+    return when (str) {
+        "января" -> 1
+        "февраля" -> 2
+        "марта" -> 3
+        "апреля" -> 4
+        "мая" -> 5
+        "июня" -> 6
+        "июля" -> 7
+        "августа" -> 8
+        "сентября" -> 9
+        "октября" -> 10
+        "ноября" -> 11
+        "декабря" -> 12
+        else -> 0
+    }
+}
+
+fun dateStrToDigit(str: String): String {
+    val date = str.split(' ')
+    if (date.size == 1) return ""
+    val day = date[0].toInt()
+    if (day >= 32) return ""
+    val month = getStringMonth(date[1])
+    if (month == 0) return ""
+    val year = date[2].toInt()
+    val daysInMonth = daysInMonth(month, year)
+    if (daysInMonth < day) return ""
+    return if (day < 10 && month < 10)
+        "0$day.0$month.$year"
+    else if (day < 10)
+        "0$day.$month.$year"
+    else if (month < 10)
+        "$day.0$month.$year"
+    else "$day.$month.$year"
+}
+
 
 /**
  * Средняя
@@ -81,7 +120,39 @@ fun dateStrToDigit(str: String): String = TODO()
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
+
+fun getStringMonth1(str: Int): String {
+    return when (str) {
+        1 -> "января"
+        2 -> "февраля"
+        3 -> "марта"
+        4 -> "апреля"
+        5 -> "мая"
+        6 -> "июня"
+        7 -> "июля"
+        8 -> "августа"
+        9 -> "сентября"
+        10 -> "октября"
+        11 -> "ноября"
+        12 -> "декабря"
+        else -> "no"
+    }
+}
+
+fun dateDigitToStr(digital: String): String {
+    val date = digital.split('.')
+    if (date.size == 1) return ""
+    if (date.size >= 4) return ""
+    val day = date[0].toIntOrNull()
+    if (day == null || day >= 32) return ""
+    val month = date[1].toInt()
+    val stringMonth = getStringMonth1(month)
+    if (month == 0) return ""
+    val year = date[2].toInt()
+    val daysInMonth = daysInMonth(month, year)
+    if (daysInMonth < day) return ""
+    return "$day $stringMonth $year"
+}
 
 /**
  * Средняя
@@ -122,7 +193,17 @@ fun bestLongJump(jumps: String): Int = TODO()
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    val filtered = jumps.filter { it !in "%-" }
+    val splitted = filtered.split(" ")
+    var result = -1
+    for (i in 0 until splitted.size - 1 step 2) {
+        val res = splitted[i].toInt()
+        val symbol = splitted[i + 1]
+        if (symbol == "+" && res > result) result = res
+    }
+    return result
+}
 
 /**
  * Сложная
@@ -133,7 +214,31 @@ fun bestHighJump(jumps: String): Int = TODO()
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    val splitted = expression.split(" ")
+    if (splitted[0].toString().contains(Regex("[+/*%-]")))
+        throw IllegalArgumentException()
+    try {
+        var result = splitted[0].toInt()
+        for (i in 2 until splitted.size step 2) {
+            val symbol = splitted[i - 1]
+            val value = splitted[i].toInt();
+            when (symbol) {
+                "+" -> {
+                    result += value
+                }
+                "-" -> {
+                    if(value < 0) throw IllegalArgumentException()
+                    result -= value
+                }
+                else -> throw IllegalArgumentException()
+            }
+        }
+        return result
+    } catch(e: NumberFormatException) {
+        throw IllegalArgumentException()
+    }
+}
 
 /**
  * Сложная

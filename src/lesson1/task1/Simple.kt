@@ -78,7 +78,7 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double = (sagenes
  * Вывести значение того же угла в радианах (например, 0.63256).
  */
 fun angleInRadian(deg: Int, min: Int, sec: Int): Double =
-    deg * PI / 180 + min * PI / (180 * 60) + sec * PI / (180 * 60 * 60)
+    PI * (deg / 180 + min / (180 * 60) + sec / (180 * 60 * 60))
 
 /**
  * Тривиальная
@@ -86,9 +86,8 @@ fun angleInRadian(deg: Int, min: Int, sec: Int): Double =
  * Найти длину отрезка, соединяющего точки на плоскости с координатами (x1, y1) и (x2, y2).
  * Например, расстояние между (3, 0) и (0, 4) равно 5
  */
-fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double = sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) *
-            (y2 - y1)
-)
+fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double =
+    sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1))
 
 /**
  * Простая
@@ -96,7 +95,7 @@ fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double = sqrt((
  * Пользователь задает целое число, большее 100 (например, 3801).
  * Определить третью цифру справа в этом числе (в данном случае 8).
  */
-fun thirdDigit(number: Int): Int = (number - number / 1000 * 1000) / 100
+fun thirdDigit(number: Int): Int = (number % 1000) / 100
 
 /**
  * Простая
@@ -105,8 +104,8 @@ fun thirdDigit(number: Int): Int = (number - number / 1000 * 1000) / 100
  * прибыл на станцию назначения в h2 часов m2 минут того же дня (например в 13:01).
  * Определите время поезда в пути в минутах (в данном случае 216).
  */
-fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int = 60 * (hoursArrive -
-        hoursDepart) + (minutesArrive - minutesDepart)
+fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int =
+    60 * (hoursArrive - hoursDepart) + (minutesArrive - minutesDepart)
 
 /**
  * Простая
@@ -126,5 +125,4 @@ fun accountInThreeYears(initial: Int, percent: Int): Double =
  * Пользователь задает целое трехзначное число (например, 478).
  * Необходимо вывести число, полученное из заданного перестановкой цифр в обратном порядке (например, 874).
  */
-fun numberRevert(number: Int): Int = number / 100 + ((number - number / 100 * 100) - (number - number / 10 * 10)) +
-        (number - number / 10 * 10) * 100
+fun numberRevert(number: Int): Int = number / 100 + ((number % 100) - (number % 10)) + (number % 10) * 100

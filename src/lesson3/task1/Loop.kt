@@ -2,7 +2,6 @@
 
 package lesson3.task1
 
-import kotlin.math.min
 import kotlin.math.sqrt
 
 /**
@@ -87,12 +86,11 @@ fun digitNumber(n: Int): Int {
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
 fun fib(n: Int): Int {
-    if ((n == 1) or (n == 2)) return 1
+    if ((n == 1) || (n == 2)) return 1
     var a: Int = 1
     var b: Int = 1
-    var c: Int
-    for (i in 3..n){
-        c = a
+    for (i in 3..n) {
+        val c: Int = a
         a += b
         b = c
     }
@@ -209,16 +207,7 @@ fun revert(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean {
-    var a: Int = n
-    var b: Int = revert(n)
-    while (a > 0) {
-        if (a % 10 != b % 10) return false
-        a /= 10
-        b /= 10
-    }
-    return true
-}
+fun isPalindrome(n: Int): Boolean = n == revert(n)
 
 /**
  * Средняя
@@ -230,13 +219,10 @@ fun isPalindrome(n: Int): Boolean {
  */
 fun hasDifferentDigits(n: Int): Boolean {
     var a: Int = n
-    var b = 0
-    var c = 0
-    while (a > 9) {
-        b = a % 10
-        c = (a / 10) % 10
+    var b = a % 10
+    while (a != 0) {
+        if (a % 10 != b) return true
         a /= 10
-        if (b != c) return true
     }
     return false
 }
@@ -254,7 +240,8 @@ fun squareSequenceDigit(n: Int): Int {
     var a: Int = 1
     var b: Int = 1
     var m: Int = 0
-    while (m + digitNumber(b) < n) {
+    var res = m + digitNumber(b)
+    while (res < n) {
         m += digitNumber(b)
         a++
         b = a * a

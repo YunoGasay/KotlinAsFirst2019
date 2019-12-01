@@ -2,7 +2,6 @@
 
 package lesson2.task1
 
-//import jdk.vm.ci.aarch64.AArch64.v1
 import lesson1.task1.discriminant
 import javax.management.Query.div
 import kotlin.math.max
@@ -66,9 +65,9 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String = when {
-    (age % 100 >= 5) and (age % 100 < 21) -> "$age лет"
+    (age % 100 >= 5) && (age % 100 < 21) || (age % 10 == 0) -> "$age лет"
     (age % 10 <= 1) -> "$age год"
-    (age % 100 < 5) or (age % 10 < 5) -> "$age года"
+    (age % 10 < 5) -> "$age года"
     else -> "$age лет"
 }
 
@@ -113,16 +112,9 @@ fun whichRookThreatens(
     rookX2: Int, rookY2: Int
 ): Int {
     return when {
-        (rookX1 == kingX) and (kingX == rookX2) -> 3
-        (rookX1 == kingX) and (kingY == rookY2) -> 3
-        (rookX2 == kingX) and (kingY == rookY1) -> 3
-        (rookY1 == kingY) and (kingY == rookY2) -> 3
-        (rookX1 == kingX) and (kingY == rookY2) -> 3
-        (rookX2 == kingX) and (kingY == rookY1) -> 3
-        rookX1 == kingX -> 1
-        rookX2 == kingX -> 2
-        rookY1 == kingY -> 1
-        rookY2 == kingY -> 2
+        ((rookX1 == kingX) || (rookY1 == kingY)) && ((kingY == rookY2) || (kingX == rookX2)) -> 3
+        rookX1 == kingX || rookY1 == kingY -> 1
+        rookX2 == kingX || rookY2 == kingY -> 2
         else -> 0
     }
 }
@@ -143,11 +135,11 @@ fun rookOrBishopThreatens(
     bishopX: Int, bishopY: Int
 ): Int {
     return when {
-        (kingX == rookX) and (kingX % 2 == bishopX % 2) and (kingY % 2 == bishopY % 2) -> 3
-        (kingY == rookY) and (kingX % 2 == bishopX % 2) and (kingY % 2 == bishopY % 2) -> 3
+        (kingX == rookX) && (kingX % 2 == bishopX % 2) && (kingY % 2 == bishopY % 2) -> 3
+        (kingY == rookY) && (kingX % 2 == bishopX % 2) && (kingY % 2 == bishopY % 2) -> 3
         kingX == rookX -> 1
         kingY == rookY -> 1
-        (kingX % 2 == bishopX % 2) and (kingY % 2 == bishopY % 2) -> 2
+        (kingX % 2 == bishopX % 2) && (kingY % 2 == bishopY % 2) -> 2
         else -> 0
     }
 }
@@ -162,9 +154,9 @@ fun rookOrBishopThreatens(
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
     return when {
-        a * a + b * b < c * c -> 2
-        (a * a + b * b == c * c) or (a * a + c * c == b * b) or (b * b + c * c == a * a) -> 1
-        (a * a + b * b > c * c) and (a + b > c) and (a + c > b) and (b + c > a) -> 0
+        (a * a + b * b == c * c) || (a * a + c * c == b * b) || (b * b + c * c == a * a) -> 1
+        (a * a + b * b > c * c) && (a + b > c) && (a + c > b) && (b + c > a) -> 0
+        (a + b >= c && a + c >= b && b + c >= a) && (a * a + b * b < c * c || a * a + c * c < b * b || c * c + b * b < a * a) -> 2
         else -> -1
     }
 }
@@ -179,12 +171,10 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
     return when {
-        (c <= a) and (d <= b) and (a > d) -> -1
-        (a <= c) and (b <= d) and (c > b) -> -1
-        (c <= a) and (d <= b) -> (d - a)
-        (c <= a) and (b <= d) -> (b - a)
-        (a <= c) and (b <= d) -> (b - c)
-        (a <= c) and (d <= b) -> (d - c)
-        else -> -2
+        (c <= a) && (d <= b) && (d >= a) -> (d - a)
+        (c <= a) && (b <= d) && (b >= a) -> (b - a)
+        (a <= c) && (b <= d) && (b >= c) -> (b - c)
+        (a <= c) && (d <= b) && (d >= c) -> (d - c)
+        else -> -1
     }
 }

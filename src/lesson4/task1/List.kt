@@ -115,25 +115,23 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double =
-    if (v.isEmpty()) 0.0
-    else {
-        var s = 0.0
-        for (i in v.indices)
-            s += v[i] * v[i]
-        sqrt(s)
-    }
+fun abs(v: List<Double>): Double {
+    var s = 0.0
+    for (element in v)
+        s += element * element
+    return sqrt(s)
+}
 
 /**
  * Простая
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double =
-    when {
-        (list.isNotEmpty()) -> (list.sum() / list.size)
-        else -> 0.0
-    }
+fun mean(list: List<Double>): Double {
+    if (list.isNotEmpty())
+        return (list.sum() / list.size)
+    return 0.0
+}
 
 /**
  * Средняя
@@ -144,12 +142,9 @@ fun mean(list: List<Double>): Double =
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    val s: Double
-    if (list.isNotEmpty()) {
-        s = (list.sum() / list.size)
-        for (i in 0 until list.size)
-            list[i] -= s
-    }
+    val s: Double = list.sum() / list.size
+    for (i in 0 until list.size)
+        list[i] -= s
     return list
 }
 
@@ -160,16 +155,13 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * представленные в виде списков a и b. Скалярное произведение считать по формуле:
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
  */
-fun times(a: List<Int>, b: List<Int>): Int =
-    if (a.isEmpty() or b.isEmpty()) 0
-    else {
-        var c = 0
-        for (i in a.indices) for (j in b.indices)
-            if (i == j) {
-                c += a[i] * b[i]
-            }
-        c
-    }
+fun times(a: List<Int>, b: List<Int>): Int {
+    var c = 0
+    for (i in a.indices) for (j in b.indices)
+        if (i == j) {c += a[i] * b[i]
+        }
+    return c
+}
 
 /**
  * Средняя
@@ -179,17 +171,15 @@ fun times(a: List<Int>, b: List<Int>): Int =
  * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
  * Значение пустого многочлена равно 0 при любом x.
  */
-fun polynom(p: List<Int>, x: Int): Int =
-    if (p.isEmpty()) 0
-    else {
-        var s = 0
-        var x1 = 1
-        for (element in p) {
-            s += element * x1
-            x1 *= x
-        }
-        s
+fun polynom(p: List<Int>, x: Int): Int {
+    var s = 0
+    var x1 = 1
+    for (element in p) {
+        s += element * x1
+        x1 *= x
     }
+    return s
+}
 
 /**
  * Средняя

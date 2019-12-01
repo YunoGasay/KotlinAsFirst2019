@@ -122,7 +122,38 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    TODO()
+    val lines = File(inputName).readLines().toMutableList()
+    var maxValue = 0
+    for (index in lines.indices) {
+        lines[index] = lines[index].trim()
+        if (maxValue < lines[index].length)
+            maxValue = lines[index].length
+    }
+
+    val writer = File(outputName).bufferedWriter()
+    for (line in lines) {
+        var value = 0
+        val list = line.split(Regex("\\s")).toMutableList()
+        list.removeAll(listOf(""))
+        for (i in 0..list.size - 2) {
+            list[i] += " "
+        }
+        val strLen = list.joinToString("").length
+        while (strLen + value < maxValue) {
+            if (list.size < 2)
+                value += maxValue
+            for (i in 0..list.size - 2) {
+                list[i] += " "
+                value++
+                if (strLen + value >= maxValue){
+                    break
+                }
+            }
+        }
+        writer.write(list.joinToString(""))
+        writer.newLine()
+    }
+    writer.close()
 }
 
 /**
@@ -244,21 +275,73 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  *
  * Соответствующий выходной файл:
 <html>
-    <body>
-        <p>
-            Lorem ipsum <i>dolor sit amet</i>, consectetur <b>adipiscing</b> elit.
-            Vestibulum lobortis. <s>Est vehicula rutrum <i>suscipit</i></s>, ipsum <s>lib</s>ero <i>placerat <b>tortor</b></i>.
-        </p>
-        <p>
-            Suspendisse <s>et elit in enim tempus iaculis</s>.
-        </p>
-    </body>
+<body>
+<p>
+Lorem ipsum <i>dolor sit amet</i>, consectetur <b>adipiscing</b> elit.
+Vestibulum lobortis. <s>Est vehicula rutrum <i>suscipit</i></s>, ipsum <s>lib</s>ero <i>placerat <b>tortor</b></i>.
+</p>
+<p>
+Suspendisse <s>et elit in enim tempus iaculis</s>.
+</p>
+</body>
 </html>
  *
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+    val text = StringBuilder("<html>\n<body>\n<p>\n")
+    var b = 0
+    var i = 0
+    var s = 0
+    var kString = 0
+    var kEmptyString = 0
+    for (line in File(inputName).readLines()) {
+        if (line.isEmpty() && kString != 0) {
+            if (kEmptyString == 0) {
+                text.append("\n</p>\n<p>\n")
+                kEmptyString++
+                continue
+            } else continue
+        }
+        kEmptyString = 0
+        for (word in line.split(" ")) {
+            var htmlword = word
+            var length = word.length
+            while (length > 0) {
+                if ("**" in htmlword) {
+                    if (b % 2 == 0) {
+                        htmlword = htmlword.replaceFirst("**", "<b>")
+                        b++
+                    } else {
+                        htmlword = htmlword.replaceFirst("**", "</b>")
+                        b++
+                    }
+                } else if ("*" in htmlword) {
+                    if (i % 2 == 0) {
+                        htmlword = htmlword.replaceFirst("*", "<i>")
+                        i++
+                    } else {
+                        htmlword = htmlword.replaceFirst("*", "</i>")
+                        i++
+                    }
+                } else if ("~~" in htmlword) {
+                    if (s % 2 == 0) {
+                        htmlword = htmlword.replaceFirst("~~", "<s>")
+                        s++
+                    } else {
+                        htmlword = htmlword.replaceFirst("~~", "</s>")
+                        s++
+                    }
+                }
+                length--
+            }
+            text.append("$htmlword ")
+        }
+        text.trim()
+        kString++
+    }
+    text.append("</p>\n</body>\n</html>")
+    File(outputName).writeText(text.toString())
 }
 
 /**
@@ -295,67 +378,67 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
  *
  * Пример входного файла:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
-* Утка по-пекински
-    * Утка
-    * Соус
-* Салат Оливье
-    1. Мясо
-        * Или колбаса
-    2. Майонез
-    3. Картофель
-    4. Что-то там ещё
-* Помидоры
-* Фрукты
-    1. Бананы
-    23. Яблоки
-        1. Красные
-        2. Зелёные
+ * Утка по-пекински
+ * Утка
+ * Соус
+ * Салат Оливье
+1. Мясо
+ * Или колбаса
+2. Майонез
+3. Картофель
+4. Что-то там ещё
+ * Помидоры
+ * Фрукты
+1. Бананы
+23. Яблоки
+1. Красные
+2. Зелёные
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  *
  *
  * Соответствующий выходной файл:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
 <html>
-  <body>
-    <ul>
-      <li>
-        Утка по-пекински
-        <ul>
-          <li>Утка</li>
-          <li>Соус</li>
-        </ul>
-      </li>
-      <li>
-        Салат Оливье
-        <ol>
-          <li>Мясо
-            <ul>
-              <li>
-                  Или колбаса
-              </li>
-            </ul>
-          </li>
-          <li>Майонез</li>
-          <li>Картофель</li>
-          <li>Что-то там ещё</li>
-        </ol>
-      </li>
-      <li>Помидоры</li>
-      <li>
-        Фрукты
-        <ol>
-          <li>Бананы</li>
-          <li>
-            Яблоки
-            <ol>
-              <li>Красные</li>
-              <li>Зелёные</li>
-            </ol>
-          </li>
-        </ol>
-      </li>
-    </ul>
-  </body>
+<body>
+<ul>
+<li>
+Утка по-пекински
+<ul>
+<li>Утка</li>
+<li>Соус</li>
+</ul>
+</li>
+<li>
+Салат Оливье
+<ol>
+<li>Мясо
+<ul>
+<li>
+Или колбаса
+</li>
+</ul>
+</li>
+<li>Майонез</li>
+<li>Картофель</li>
+<li>Что-то там ещё</li>
+</ol>
+</li>
+<li>Помидоры</li>
+<li>
+Фрукты
+<ol>
+<li>Бананы</li>
+<li>
+Яблоки
+<ol>
+<li>Красные</li>
+<li>Зелёные</li>
+</ol>
+</li>
+</ol>
+</li>
+</ul>
+</body>
 </html>
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
@@ -382,23 +465,23 @@ fun markdownToHtml(inputName: String, outputName: String) {
  * Вывести в выходной файл процесс умножения столбиком числа lhv (> 0) на число rhv (> 0).
  *
  * Пример (для lhv == 19935, rhv == 111):
-   19935
-*    111
+19935
+ *    111
 --------
-   19935
+19935
 + 19935
 +19935
 --------
- 2212785
+2212785
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  * Нули в множителе обрабатывать так же, как и остальные цифры:
-  235
-*  10
+235
+ *  10
 -----
-    0
+0
 +235
 -----
- 2350
+2350
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
@@ -412,16 +495,16 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  * Вывести в выходной файл процесс деления столбиком числа lhv (> 0) на число rhv (> 0).
  *
  * Пример (для lhv == 19935, rhv == 22):
-  19935 | 22
- -198     906
- ----
-    13
-    -0
-    --
-    135
-   -132
-   ----
-      3
+19935 | 22
+-198     906
+----
+13
+-0
+--
+135
+-132
+----
+3
 
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  *
