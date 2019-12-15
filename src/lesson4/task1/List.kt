@@ -158,7 +158,8 @@ fun center(list: MutableList<Double>): MutableList<Double> {
 fun times(a: List<Int>, b: List<Int>): Int {
     var c = 0
     for (i in a.indices) for (j in b.indices)
-        if (i == j) {c += a[i] * b[i]
+        if (i == j) {
+            c += a[i] * b[i]
         }
     return c
 }
@@ -211,15 +212,12 @@ fun factorize(n: Int): List<Int> {
     var n1 = n
     var m0 = 2
     val q = mutableListOf<Int>()
-    while (n1 != 1) {
-        for (i in 0 until n1)
-            if (n1 % m0 == 0) {
-                n1 /= m0
-                q.add(m0)
-            }
-        m0 += 1
+    while (n1 > 1) {
+        if (n1 % m0 == 0) {
+            n1 /= m0
+            q.add(m0)
+        } else m0 += 1
     }
-    q.sorted()
     return q
 }
 
@@ -232,18 +230,7 @@ fun factorize(n: Int): List<Int> {
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
 fun factorizeToString(n: Int): String {
-    var n1 = n
-    var m0 = 2
-    val q = mutableListOf<Int>()
-    while (n1 != 1) {
-        for (i in 0 until n1)
-            if (n1 % m0 == 0) {
-                n1 /= m0
-                q.add(m0)
-            }
-        m0 += 1
-    }
-    q.sorted()
+    val q = factorize(n)
     return q.joinToString(separator = "*")
 }
 
@@ -256,19 +243,14 @@ fun factorizeToString(n: Int): String {
  */
 fun convert(n: Int, base: Int): List<Int> {
     var n1 = n
-    var m0 = 0
+    var m0: Int
     val q = mutableListOf<Int>()
-    while (n1 / 10 > 0) {
+    while (n1 != 0) {
         m0 = n1 % base
         n1 /= base
-        q.add(0, m0)
+        q.add(m0)
     }
-    while (n1 > 0) {
-        m0 = n1 % base
-        n1 /= base
-        q.add(0, m0)
-    }
-    return q
+    return q.reversed()
 }
 
 /**
@@ -283,18 +265,14 @@ fun convert(n: Int, base: Int): List<Int> {
  * (например, n.toString(base) и подобные), запрещается.
  */
 fun convertToString(n: Int, base: Int): String {
-    var n1 = n
     val q = StringBuilder()
-    if (n == 0) return "0"
-    while (n1 != 0) {
-        val s = n1 % base
-        q.append(
-            if (s < 10) s
-            else 'a' + s - 10
-        )
-        n1 /= base
+    val s = convert(n, base)
+    for (i in s) {
+        if (i >= 10) {
+            q.append('a' + i - 10)
+        } else q.append(i)
     }
-    return q.toString().reversed()
+    return q.toString()
 }
 
 /**
@@ -326,13 +304,12 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * (например, str.toInt(base)), запрещается.
  */
 fun decimalFromString(str: String, base: Int): Int {
-    var s = 0
+    val digits = mutableListOf<Int>()
     for (i in str) {
-        s *= base
-        s += if (i.isDigit()) (i - '0')
-        else (i - 'a' + 10)
+        if (i.isDigit()) digits.add(i - '0')
+        else digits.add(i - 'a' + 10)
     }
-    return s
+    return decimal(digits, base)
 }
 
 /**
@@ -355,43 +332,44 @@ fun roman(n: Int): String = TODO()
 fun russian(n: Int): String {
     if (n == 0) return "ноль"
     var result = ""
-    val a = mapOf(
+    val num = mapOf(
         1 to "один", 2 to "два", 3 to "три", 4 to "четыре", 5 to "пять", 6 to "шесть",
         7 to "семь", 8 to "восемь", 9 to "девять"
     )
-    val a1 = mapOf(
+    val num1 = mapOf(
         1 to "одна", 2 to "две", 3 to "три", 4 to "четыре", 5 to "пять", 6 to "шесть",
         7 to "семь", 8 to "восемь", 9 to "девять"
     )
-    val b = mapOf(
+    val elevnin = mapOf(
         11 to "одинадцать", 12 to "двенадцать", 13 to "тринадцать", 14 to "четырнадцать",
         15 to "пятнадцать", 16 to "шестнадцать", 17 to "семнадцать", 18 to "восемнадцать", 19 to "девятнадцать"
     )
-    val c = mapOf(
+    val tenths = mapOf(
         1 to "десять", 2 to "двадцать", 3 to "тридцать", 4 to "сорок", 5 to "пятьдесят",
         6 to "шестьдесят", 7 to "семьдесят", 8 to "восемьдесят", 9 to "девяносто"
     )
-    val d = mapOf(
+    val hundredths = mapOf(
         1 to "сто", 2 to "двести", 3 to "триста", 4 to "четыреста", 5 to "пятьсот",
         6 to "шестьсот", 7 to "семьсот", 8 to "восемьсот", 9 to "девятьсот"
     )
     var src = n
     var k = src % 1000
     var move = 1
+
     while (src > 0) {
         if (k > 0) {
-            var moveResult = ""
+            var moveResult: String
             var k100 = k % 100
-            if (b.containsKey(k100))
-                moveResult = "${b[k100]}"
+            if (elevnin.containsKey(k100))
+                moveResult = "${elevnin[k100]}"
             else {
                 val k10 = k % 10
                 k100 /= 10
-                moveResult = "${c.getOrDefault(k100, "")} ${if (move == 1)
-                    a.getOrDefault(k10, "") else a1.getOrDefault(k10, "")}".trim()
+                moveResult = "${tenths.getOrDefault(k100, "")} ${if (move == 1)
+                    num.getOrDefault(k10, "") else num1.getOrDefault(k10, "")}".trim()
             }
             val k1000 = k / 100
-            moveResult = "${d.getOrDefault(k1000, "")} $moveResult".trim()
+            moveResult = "${hundredths.getOrDefault(k1000, "")} $moveResult".trim()
             if (move > 1 && moveResult.isNotBlank()) {
                 moveResult = "$moveResult " +
                         when {
