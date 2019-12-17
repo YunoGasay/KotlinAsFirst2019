@@ -3,7 +3,7 @@
 package lesson2.task1
 
 import lesson1.task1.discriminant
-import javax.management.Query.div
+import lesson1.task1.sqr
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sqrt
@@ -154,10 +154,10 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     val min = minOf(a, b, c)
     val median = a + b + c - max - min
     return when {
-        min * min + median * median < max * max -> 2
-        min * min + median * median == max * max -> 1
-        min * min + median * median > max * max -> 0
-        else -> -1
+        min + median - max < 0 -> -1
+        sqr(min) + sqr(median) == sqr(max) -> 1
+        sqr(min) + sqr(median) > sqr(max) -> 0
+        else -> 2
     }
 }
 
