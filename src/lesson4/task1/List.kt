@@ -241,6 +241,7 @@ fun factorizeToString(n: Int): String {
 fun convert(n: Int, base: Int): List<Int> {
     var n1 = n
     val result = mutableListOf<Int>()
+    if (n == 0) return listOf(n)
     while (n1 != 0) {
         result.add(n1 % base)
         n1 /= base
@@ -260,14 +261,15 @@ fun convert(n: Int, base: Int): List<Int> {
  * (например, n.toString(base) и подобные), запрещается.
  */
 fun convertToString(n: Int, base: Int): String {
-    val q = StringBuilder()
+    val result = StringBuilder()
     val s = convert(n, base)
+    if (n == 0) return n.toString()
     for (i in s) {
         if (i >= 10) {
-            q.append('a' + i - 10)
-        } else q.append(i)
+            result.append('a' + i - 10)
+        } else result.append(i)
     }
-    return q.toString()
+    return result.toString()
 }
 
 /**
@@ -336,7 +338,7 @@ fun russian(n: Int): String {
         7 to "семь", 8 to "восемь", 9 to "девять"
     )
     val elevnin = mapOf(
-        11 to "одинадцать", 12 to "двенадцать", 13 to "тринадцать", 14 to "четырнадцать",
+        11 to "одиннадцать", 12 to "двенадцать", 13 to "тринадцать", 14 to "четырнадцать",
         15 to "пятнадцать", 16 to "шестнадцать", 17 to "семнадцать", 18 to "восемнадцать", 19 to "девятнадцать"
     )
     val tenths = mapOf(
