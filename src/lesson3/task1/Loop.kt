@@ -240,20 +240,14 @@ fun squareSequenceDigit(n: Int): Int {
     var a: Int = 1
     var b: Int = 1
     var m: Int = 0
-    var res = m + digitNumber(b)
-    while (res < n) {
+    while (m + digitNumber(b) < n) {
         m += digitNumber(b)
         a++
         b = a * a
     }
     m += digitNumber(b)
     m -= n
-    var i: Int = 0
-    while (i < m) {
-        b /= 10
-        i++
-    }
-    return b % 10
+    return regular(n, m, b)
 }
 
 /**
@@ -276,10 +270,15 @@ fun fibSequenceDigit(n: Int): Int {
     }
     m += digitNumber(b)
     m -= n
+    return regular(n, m, b)
+}
+
+fun regular(n: Int, m: Int, b: Int): Int {
+    var c = b
     var i: Int = 0
     while (i < m) {
-        b /= 10
+        c /= 10
         i++
     }
-    return b % 10
+    return c % 10
 }

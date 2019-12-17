@@ -142,7 +142,7 @@ fun mean(list: List<Double>): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    val s: Double = list.sum() / list.size
+    val s: Double = mean(list)
     for (i in 0 until list.size)
         list[i] -= s
     return list
@@ -157,10 +157,7 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  */
 fun times(a: List<Int>, b: List<Int>): Int {
     var c = 0
-    for (i in a.indices) for (j in b.indices)
-        if (i == j) {
-            c += a[i] * b[i]
-        }
+    for (i in a.indices) c += a[i] * b[i]
     return c
 }
 
@@ -212,7 +209,7 @@ fun factorize(n: Int): List<Int> {
     var n1 = n
     var m0 = 2
     val q = mutableListOf<Int>()
-    while (n1 > 1) {
+    while (n1 in 2..n1) {
         if (n1 % m0 == 0) {
             n1 /= m0
             q.add(m0)
@@ -243,14 +240,12 @@ fun factorizeToString(n: Int): String {
  */
 fun convert(n: Int, base: Int): List<Int> {
     var n1 = n
-    var m0: Int
-    val q = mutableListOf<Int>()
+    val result = mutableListOf<Int>()
     while (n1 != 0) {
-        m0 = n1 % base
+        result.add(n1 % base)
         n1 /= base
-        q.add(m0)
     }
-    return q.reversed()
+    return result.reversed()
 }
 
 /**

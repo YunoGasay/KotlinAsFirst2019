@@ -169,11 +169,9 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
     val result = mapA.toMutableMap()
     for ((key, value) in mapB) {
         val rKey = result[key]
-        if (key in result && value != rKey) {
-            result[key] = mapA[key] + ", " + mapB[key]
-        } else {
-            result += key to value
-        }
+        if (rKey != null && value != rKey) {
+            result[key] = rKey + ", " + mapB[key]
+        } else result += key to value
     }
     return result
 }
@@ -234,8 +232,8 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean =
-    chars.map { it.toLowerCase() }.intersect(word.toLowerCase().toSet()) == word.toLowerCase().toSet()
-//без toSet() не идёт, предполагаю, что это из-за версии.
+    chars.map { it.toLowerCase() }.containsAll(word.toLowerCase().toSet())
+
 /**
  * Средняя
  *
@@ -321,14 +319,13 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    var answer: Pair<Int, Int> = Pair(-1, -1)
+    val answer = mutableMapOf<Int, Int>()
     for (i in list.indices) {
-        for (j in i + 1 until list.size) {
-            if (list[i] + list[j] == number)
-                answer = Pair(i, j)
-        }
+        val j = answer[list[i]]
+        if (j != null) return j to i
+        answer[number - list[i]] = i
     }
-    return answer
+    return -1 to -1
 }
 
 /**

@@ -154,7 +154,7 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     val min = minOf(a, b, c)
     val median = a + b + c - max - min
     return when {
-        min + median - max < 0 -> -1
+        min + median < max -> -1
         sqr(min) + sqr(median) == sqr(max) -> 1
         sqr(min) + sqr(median) > sqr(max) -> 0
         else -> 2
