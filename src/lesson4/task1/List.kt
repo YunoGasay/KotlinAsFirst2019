@@ -280,12 +280,12 @@ fun convertToString(n: Int, base: Int): String {
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
 fun decimal(digits: List<Int>, base: Int): Int {
-    var s = 0
+    var result = 0
     for (i in digits) {
-        s *= base
-        s += i
+        result *= base
+        result += i
     }
-    return s
+    return result
 }
 
 /**
