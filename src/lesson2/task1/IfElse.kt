@@ -4,6 +4,7 @@ package lesson2.task1
 
 import lesson1.task1.discriminant
 import javax.management.Query.div
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sqrt
 
@@ -65,9 +66,8 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String = when {
-    (age % 100 >= 5) && (age % 100 < 21) || (age % 10 == 0) -> "$age лет"
-    (age % 10 <= 1) -> "$age год"
-    (age % 10 < 5) -> "$age года"
+    (age % 10 == 1 && age % 100 != 11) -> "$age год"
+    (age % 10 in 2..4 && age % 100 !in 12..14) -> "$age года"
     else -> "$age лет"
 }
 
@@ -91,8 +91,7 @@ fun timeForHalfWay(
     return when {
         s <= s1 -> s / v1
         s <= s1 + s2 -> (s - s1) / v2 + t1
-        s <= s1 + s2 + s3 -> (s - s1 - s2) / v3 + t1 + t2
-        else -> t1 + t2 + t3
+        else -> (s - s1 - s2) / v3 + t1 + t2
     }
 }
 
@@ -135,11 +134,9 @@ fun rookOrBishopThreatens(
     bishopX: Int, bishopY: Int
 ): Int {
     return when {
-        (kingX == rookX) && (kingX % 2 == bishopX % 2) && (kingY % 2 == bishopY % 2) -> 3
-        (kingY == rookY) && (kingX % 2 == bishopX % 2) && (kingY % 2 == bishopY % 2) -> 3
-        kingX == rookX -> 1
-        kingY == rookY -> 1
-        (kingX % 2 == bishopX % 2) && (kingY % 2 == bishopY % 2) -> 2
+        ((kingX == rookX) || (kingY == rookY)) && (abs(kingX - bishopX) == abs(kingY - bishopY)) -> 3
+        kingX == rookX || kingY == rookY -> 1
+        abs(kingX - bishopX) == abs(kingY - bishopY) -> 2
         else -> 0
     }
 }
@@ -153,10 +150,13 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
+    val max = maxOf(a, b, c)
+    val min = minOf(a, b, c)
+    val median = a + b + c - max - min
     return when {
-        (a * a + b * b == c * c) || (a * a + c * c == b * b) || (b * b + c * c == a * a) -> 1
-        (a * a + b * b > c * c) && (a + b > c) && (a + c > b) && (b + c > a) -> 0
-        (a + b >= c && a + c >= b && b + c >= a) && (a * a + b * b < c * c || a * a + c * c < b * b || c * c + b * b < a * a) -> 2
+        min * min + median * median < max * max -> 2
+        min * min + median * median == max * max -> 1
+        min * min + median * median > max * max -> 0
         else -> -1
     }
 }
