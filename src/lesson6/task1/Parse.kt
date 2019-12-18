@@ -92,21 +92,14 @@ fun getStringMonth(str: String): Int {
 
 fun dateStrToDigit(str: String): String {
     val date = str.split(' ')
-    if (date.size == 1) return ""
-    val day = date[0].toInt()
-    if (day >= 32) return ""
+    if (date.size != 3) return ""
+    val day = date[0].toIntOrNull()
     val month = getStringMonth(date[1])
     if (month == 0) return ""
     val year = date[2].toInt()
     val daysInMonth = daysInMonth(month, year)
-    if (daysInMonth < day) return ""
-    return if (day < 10 && month < 10)
-        "0$day.0$month.$year"
-    else if (day < 10)
-        "0$day.$month.$year"
-    else if (month < 10)
-        "$day.0$month.$year"
-    else "$day.$month.$year"
+    if (daysInMonth < day!!) return ""
+    return String.format("%02d.%02d.%02d", day, month, year)
 }
 
 
@@ -141,16 +134,14 @@ fun getStringMonth1(str: Int): String {
 
 fun dateDigitToStr(digital: String): String {
     val date = digital.split('.')
-    if (date.size == 1) return ""
-    if (date.size >= 4) return ""
+    if (date.size != 3) return ""
     val day = date[0].toIntOrNull()
-    if (day == null || day >= 32) return ""
-    val month = date[1].toInt()
-    val stringMonth = getStringMonth1(month)
-    if (month == 0) return ""
+    val month = date[1].toIntOrNull()
+    val stringMonth = month?.let { getStringMonth1(it) }
+    if (month !in 1..12) return ""
     val year = date[2].toInt()
-    val daysInMonth = daysInMonth(month, year)
-    if (daysInMonth < day) return ""
+    val daysInMonth = month?.let { daysInMonth(it, year) }
+    if (daysInMonth!! < day!!) return ""
     return "$day $stringMonth $year"
 }
 
@@ -198,9 +189,9 @@ fun bestHighJump(jumps: String): Int {
     val splitted = filtered.split(" ")
     var result = -1
     for (i in 0 until splitted.size - 1 step 2) {
-        val res = splitted[i].toInt()
+        val res = splitted[i].toIntOrNull()
         val symbol = splitted[i + 1]
-        if (symbol == "+" && res > result) result = res
+        if (symbol == "+" && res!! > result) result = res
     }
     return result
 }
@@ -216,28 +207,24 @@ fun bestHighJump(jumps: String): Int {
  */
 fun plusMinus(expression: String): Int {
     val splitted = expression.split(" ")
-    if (splitted[0].toString().contains(Regex("[+/*%-]")))
+    if (splitted[0].contains(Regex("[+-]")))
         throw IllegalArgumentException()
-    try {
-        var result = splitted[0].toInt()
-        for (i in 2 until splitted.size step 2) {
-            val symbol = splitted[i - 1]
-            val value = splitted[i].toInt();
-            when (symbol) {
-                "+" -> {
-                    result += value
-                }
-                "-" -> {
-                    if(value < 0) throw IllegalArgumentException()
-                    result -= value
-                }
-                else -> throw IllegalArgumentException()
+    var result = splitted[0].toInt()
+    for (i in 2 until splitted.size step 2) {
+        val symbol = splitted[i - 1]
+        val value = splitted[i].toInt();
+        if (value < 0) throw IllegalArgumentException()
+        when (symbol) {
+            "+" -> {
+                result += value
             }
+            "-" -> {
+                result -= value
+            }
+            else -> throw IllegalArgumentException()
         }
-        return result
-    } catch(e: NumberFormatException) {
-        throw IllegalArgumentException()
     }
+    return result
 }
 
 /**
